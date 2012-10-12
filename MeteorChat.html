@@ -1,0 +1,89 @@
+<head>
+	<title>MeteorChat</title>
+</head>
+
+<body>
+	<div class="container">
+		{{> header}}
+
+		{{> mainPage}}
+
+		{{> footer}}
+	</div>
+</body>
+<!--Head template that changes.-->
+<template name="header">
+	<header>
+		<h1>{{header}}</h1>
+		{{> loginButtons}}
+	</header>
+</template>
+
+<template name="mainPage">
+	<div class="content">
+	{{#if currentUser}}
+		<div>
+			<label for="createRoomName">Skapa nytt rum</label>
+			<input type="text" id="createRoomName" name="CreatRoom" title="Rummets namn..." placeholder="Rummets namn...">
+			<input type="button" class="createRoom" value="Skapa">
+
+			<label for="roomSelect">Välj ett rum</label>
+			{{#if roomsExist}}
+			<select id="roomSelect" name="roomselect">
+				{{#each rooms}}
+				<option value="{{_id}}">{{name}}</option>
+				{{/each}}
+			</select>
+			{{/if}}
+		</div>
+		{{#if isSelectedRoom}}
+			{{> roomlist}}
+			{{> chatRoom}}
+		{{/if}}
+	{{else}}
+		<h2>Vänligen logga in!</h2>
+	{{/if}}
+	</div>
+</template>
+
+<template name="footer">
+	<footer>
+			Denna testchat har skapats i utvecklingssyfte för kursen <a href="http://coursepress.lnu.se/kurs/moderna-applikationsmiljoer" title="Kursens webbsida">Moderna applikationsmiljöer <span>"2DV400"</span></a>. Den har i uppgift att visa lite om realtidswebben och hur man med javascripts-ramverket <a href="http://www.meteor.com" title="Meteors webbsida">Meteor</a> kan skapa applikationer som använder sig av just detta. Vi som har skapat denna applikation heter Hans Bentlöv och Claes Tillborg och går tredje året på programmet <a href="http://coursepress.lnu.se/program/webbprogrammerare" title="Programmets webbsida">webbprogramering</a> på <a href="http://www.lnu.se" title="Linneuniversitetets webbsida">Linneuniversitetet</a> i Kalmar.
+		</footer>
+</template>
+
+<template name="roomlist">
+	<nav>
+		<a href="#room1" title="Room1">Room1</a> |
+		<a href="#room2" title="Room2">Room2</a> |
+	</nav>
+</template>
+
+<template name="chatRoom">
+	<section>
+			
+		<div class ="thirteen columns alpha chatWraper">
+			<div class="chatWindow framed">
+				<p class="message">User name: Text written</p>
+			</div>
+			
+			<div class="messageBox">
+				<input type="text" name="message" class="addMessage" title="Skriv meddelande..." placeholder="Skriv meddelande...">
+			</div>
+		</div>
+
+		<aside class="three columns omega pertisipantlist framed">
+			<dl>
+				<dt>Host:</dt>
+					<dd>name of host</dd>
+				<dt>Chat members:</dt>
+					<dd>name of members</dd>
+			</dl>
+		</aside>
+		<br class="clear" />
+		<div class="eventWindow framed">
+			<p>event code!</p>
+		</div>
+
+	</section>
+</template>

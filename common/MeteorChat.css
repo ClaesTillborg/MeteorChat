@@ -1,0 +1,22 @@
+/* CSS declarations go here */
+
+.content {
+	min-height: 500px;
+}
+
+.chatWindow {
+	height: 300px;
+}
+.messageBox {
+	margin-top: 10px;
+}
+.messageBox input[type=text] {
+	width: 80%;
+}
+.pertisipantlist {
+}
+
+.framed {
+	padding: 0.5em;
+	border: 0.2em solid gray;
+}
