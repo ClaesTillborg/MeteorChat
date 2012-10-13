@@ -61,14 +61,10 @@ Meteor.methods({
     return c+'-'+a;
   }
 });
-Meteor.startup(function() {
-  Meteor.default_server.method_handlers['/slides/insert'] = function () {};
-  Meteor.default_server.method_handlers['/slides/update'] = function () {};
-  Meteor.default_server.method_handlers['/slides/remove'] = function () {};
-  Meteor.default_server.method_handlers['/shows/insert'] = function () {};
-  Meteor.default_server.method_handlers['/shows/update'] = function () {};
-  Meteor.default_server.method_handlers['/shows/remove'] = function () {};
-});
 */
 
-if (true) {};
+Meteor.startup(function() {
+  Meteor.default_server.method_handlers['/room/insert'] = function () {};
+  Meteor.default_server.method_handlers['/room/update'] = function () {};
+  Meteor.default_server.method_handlers['/room/remove'] = function () {};
+});

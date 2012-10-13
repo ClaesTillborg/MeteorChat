@@ -19,23 +19,34 @@
 	</header>
 </template>
 
+<template name="roomHandler">
+	<div>
+		
+		<label for="roomAccess">Gör rummet privat<input type="checkbox" id="roomAccess" name="private" /></label>
+		{{#if error}}
+    <span class="error">
+      {{error}} 
+    </span>
+  	{{/if}}
+		<input type="text" id="createRoomName" name="CreatRoom" title="nytt rum..." placeholder="Nytt rum..." />
+
+		<input type="button" class="createRoom" value="Skapa">
+		
+		{{#if roomsExist}}
+		<label for="roomSelect">Publika rum:</label>
+		<select id="roomSelect" name="roomselect">
+			{{#each publicRooms}}
+			<option value="{{_id}}">{{name}}</option>
+			{{/each}}
+		</select>
+		{{/if}}
+	</div>
+</template>
+
 <template name="mainPage">
 	<div class="content">
 	{{#if currentUser}}
-		<div>
-			<label for="createRoomName">Skapa nytt rum</label>
-			<input type="text" id="createRoomName" name="CreatRoom" title="Rummets namn..." placeholder="Rummets namn...">
-			<input type="button" class="createRoom" value="Skapa">
-
-			<label for="roomSelect">Välj ett rum</label>
-			{{#if roomsExist}}
-			<select id="roomSelect" name="roomselect">
-				{{#each rooms}}
-				<option value="{{_id}}">{{name}}</option>
-				{{/each}}
-			</select>
-			{{/if}}
-		</div>
+		{{> roomHandler}}
 		{{#if isSelectedRoom}}
 			{{> roomlist}}
 			{{> chatRoom}}
@@ -54,8 +65,9 @@
 
 <template name="roomlist">
 	<nav>
-		<a href="#room1" title="Room1">Room1</a> |
-		<a href="#room2" title="Room2">Room2</a> |
+		{{#each joinedRooms}}
+			<span class"roomTag">{{name}}</span>
+		{{/each}}
 	</nav>
 </template>
 
