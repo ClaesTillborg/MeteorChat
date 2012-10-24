@@ -12,8 +12,9 @@ Template.roomHandler.events({
 	},
   'change .roomSelect': function() {
   	var roomId = event.target.value;
-  	console.log(this);
   	Session.set("selectedRoom", roomId);
+  	var room = Rooms.find({_id: roomId});
+  	
   	Create.log(roomId, "loggade in!");
   }
 });
