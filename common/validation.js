@@ -6,10 +6,7 @@ var Validation = {
     Session.set("error", message);
   },
   roomNameLength: function(name) {
-    if (name.length === 0) {
-      this.setError("Rummet måste ha ett namn!");
-      return false;
-    } else if (name.length > 20) {
+    if(name.length > 20) {
       this.setError("Namnet är för långt! max 20 tecken");
       return false;
     }
@@ -17,16 +14,21 @@ var Validation = {
   },
   validRoomName: function (name) {
     this.clear();
+    if(name.length === 0) {
+      this.setError("Rummet måste ha ett namn!");
+      return false;
+    }
     if(!this.roomNameLength(name)){
       return false;
-    } else if (this.roomExists(name)) {
+    }
+    if(this.roomExists(name)) {
       this.setError("Detta namn finns redan, försök igen!");
       return false;
     } 
     return true;
   },
   roomExists: function(name) {
-    if(Rooms.find({privateRom: false, name: name}).count() === 0) {
+    if(Rooms.find({privateRoom: false, name: name}).count() === 0) {
       return false;
     }
     return true;

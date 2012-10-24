@@ -2,6 +2,6 @@
 	Publishes the collections
  */
 
-Meteor.publish("rooms", function() {
+Meteor.publish("joinedRooms", function() {
 	return Rooms.find({});
 });

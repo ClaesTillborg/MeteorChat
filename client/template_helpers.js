@@ -2,6 +2,7 @@ Template.mainPage.isSelectedRoom = function() {
 	return Session.get("selectedRoom") || false;
 };
 
+//roomhander handlers
 Template.roomHandler.roomsExist = function() {
 	return Rooms.find({privateRoom: false}).count() !== 0;
 };
@@ -9,24 +10,34 @@ Template.roomHandler.roomsExist = function() {
 Template.roomHandler.publicRooms = function() {
 	return Rooms.find({privateRoom: false});
 };
+Template.roomHandler.isActiveRoom = function() {
+	return Session.equals("selectedRoom", this._id);
+};
 
+//roomlist handlers
 Template.roomlist.joinedRooms = function() {
-	var rooms = [];
-	var userId = Meteor.userId();
-	Rooms.find({}).forEach(function(room){
-		room.perticipants.forEach(function(person){
-			if (person.id === userId) {
-				rooms += room;
-			};
-		});
-	});
-	return rooms;
-}
+	return Rooms.find({});
+};
+Template.roomlist.active = function() {
+	return Session.equals("selectedRoom", this._id) ? " active" : "";
+};
+
+//Chatroom handlers
+Template.chatRoom.room = function() {
+	return Rooms.findOne({_id: Session.get("selectedRoom")});
+};
+
+
 //--------------------------------------------------Helpers----------------------------------------------------->
-Handlebars.registerHelper('header', function() {
-//TODO: return User.findOne({_id : userId}, {fields: {name: 1}});
-	return "Meteor bloggen";
+Handlebars.registerHelper('logDate', function(date) {
+	var newDate = new Date(date);
+	var hours = timeConverter(newDate.getHours());
+	var minutes = timeConverter(newDate.getMinutes());
+	var seconds = timeConverter(newDate.getSeconds());
+
+	return new Handlebars.SafeString(hours + ":" + minutes + ":" + seconds);
 });
+
 Handlebars.registerHelper('formatDate', function(date) {
 	var date = new Date(date);
 	months = new Array("Januari","Februari","Mars","April","Maj","Juni","Juli","Augusti","September","Oktober","November","December");
@@ -38,11 +49,13 @@ Handlebars.registerHelper('formatDate', function(date) {
 
 });
 
-Handlebars.registerHelper('user', function() {
-//TODO: return Meteor.user().profile.name;
-	return "Claes Tillborg";
-});
-
 Handlebars.registerHelper('error', function() {
 	return Session.get("error");
 });
+
+var timeConverter = function(time) {
+	if (time<10) {
+		return "0" + time; 
+	};
+	return time;
+};

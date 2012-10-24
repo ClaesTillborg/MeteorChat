@@ -6,8 +6,6 @@ var myRoutes = Backbone.Router.extend({
   },
 //creating the room-session.
   start: function() {
-    console.log("Creating the room-session");
-    Session.set("selectedRoom", null);
   },
 //Setting the selected room.
   room: function(roomName) {

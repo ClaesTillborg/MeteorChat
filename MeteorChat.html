@@ -21,23 +21,26 @@
 
 <template name="roomHandler">
 	<div>
-		
-		<label for="roomAccess">Gör rummet privat<input type="checkbox" id="roomAccess" name="private" /></label>
 		{{#if error}}
-    <span class="error">
-      {{error}} 
-    </span>
-  	{{/if}}
-		<input type="text" id="createRoomName" name="CreatRoom" title="nytt rum..." placeholder="Nytt rum..." />
-
-		<input type="button" class="createRoom" value="Skapa">
-		
+	    <span class="error">
+	      {{error}} 
+	    </span>
+	  	{{/if}}
+	  <label for="roomName">Skapa ett eget rum:</label>
+		<input type="text" id="roomName" class="createRoom" name="CreatRoom" title="Rummets namn..." placeholder="Nytt rum..." />
+		<label for="roomAccess">Gör rummet privat <input type="checkbox" id="roomAccess" name="private" /></label>
 		{{#if roomsExist}}
-		<label for="roomSelect">Publika rum:</label>
-		<select id="roomSelect" name="roomselect">
-			{{#each publicRooms}}
+		<label>Publika rum:</label>
+		<select class="roomSelect" name="roomselect">
+		{{#each publicRooms}}
+
+			{{#if isActiveRoom}}
+			<option value="{{_id}}" selected="selected">{{name}}</option>
+			{{else}}
 			<option value="{{_id}}">{{name}}</option>
-			{{/each}}
+			{{/if}}
+
+		{{/each}}
 		</select>
 		{{/if}}
 	</div>
@@ -66,17 +69,19 @@
 <template name="roomlist">
 	<nav>
 		{{#each joinedRooms}}
-			<span class"roomTag">{{name}}</span>
+			<span class="roomTag{{active}}">{{name}}</span> |
 		{{/each}}
 	</nav>
 </template>
 
 <template name="chatRoom">
 	<section>
-			
+		{{#with room}}
 		<div class ="thirteen columns alpha chatWraper">
 			<div class="chatWindow framed">
-				<p class="message">User name: Text written</p>
+				{{#each messages}}
+				<span class="message"><strong>{{userName}}:</strong> {{message}}</span>
+				{{/each}}
 			</div>
 			
 			<div class="messageBox">
@@ -87,15 +92,19 @@
 		<aside class="three columns omega pertisipantlist framed">
 			<dl>
 				<dt>Host:</dt>
-					<dd>name of host</dd>
+					<dd>{{createrName}}</dd>
 				<dt>Chat members:</dt>
-					<dd>name of members</dd>
+					{{#each perticipants}}
+					<dd>{{userName}}</dd>
+					{{/each}}
 			</dl>
 		</aside>
 		<br class="clear" />
 		<div class="eventWindow framed">
-			<p>event code!</p>
+			{{#each roomlog}}
+			<span class="logMessage">{{logDate date}} - [{{userName}}] {{logtext}}</span>
+			{{/each}}
 		</div>
-
+		{{/with}}
 	</section>
 </template>

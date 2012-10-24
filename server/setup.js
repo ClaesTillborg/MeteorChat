@@ -2,66 +2,65 @@
   Server methods
 */
 Meteor.methods({
-});  
-
-/*
-
-Exemple of setup funktions
-
-var server_password = 'supersecret';
-Meteor.methods({
-  update: function(selector, updates, multi, passcode) {
-    var show = Shows.findOne(selector.show_id);
-    if(show && passcode && (passcode === show.secret)) {
-      return Slides.update(selector, updates, multi);
-    }
+  addMessage: function(room, text) {
+    var uuid =  Meteor.uuid();
+    var newMessage = {
+      "_id": uuid,
+      "parentId": room._id,
+      "userId": Meteor.userId(),
+      "userName": Meteor.user().profile.name,
+      "message": text
+    };
+    Rooms.update({ _id: room._id }, { $addToSet: { messages: newMessage}});
+    return uuid;
   },
-  insert: function(attributes, passcode) {
-    var secret = Shows.findOne(attributes.show_id).secret;
-    if(passcode && passcode === secret) {
-      return Slides.insert(attributes);
-    }
-  },
-  remove: function(selector, passcode) {
-    var secret = Shows.findOne(selector.show_id).secret;
-    if(passcode && passcode === secret) {
-      return Slides.remove(selector);
-    }
-  },
-  // -- Methods for Slideshows -- //
-  updateShow: function(show_id, updates, passcode) {
-    var show = Shows.findOne(show_id);
-    if(show && passcode && (passcode === show.secret)) {
-      Shows.update({_id: show_id}, updates);
-    }
-  },
-  newShow: function(code) {
-    var show_id = Shows.insert({title: 'Double click to edit', body: "I'm sorry, there isn't a tutorial yet", created_at: Date.now(), secret: code});
-    return show_id;
-  },
-  removeShow: function(show_id, passcode) {
-    var secret = Shows.findOne(show_id).secret;
-    if(passcode && passcode === secret) {
-      Shows.remove({_id: show_id});
-      Slides.remove({show_id: show_id});
-    }
-  },
-
-  confirmSecret: function(show_id, client_secret) {
-    var show = Shows.findOne(show_id);
-    if(show && show.secret === client_secret) {
-      return true;
-    } else {
+  removeMessage: function(message) {
+    if (message.userId !== Meteor.userId()) {
+      throw new Meteor.Error(404, "Can't remove a message you did't create!");
       return false;
-    }
+    };
+    
+    Rooms.update({ _id: message.parentId }, { $pull: { messages: { _id: message._id}}});
+    return true;
   },
-  generateSecret: function() {
-    var a = animals[Math.floor(Math.random()*num_animals)];
-    var c = colors[Math.floor(Math.random()*num_colors)];
-    return c+'-'+a;
+  createRoom: function(name, access) {
+    var newRoom = {
+        "name": name,
+        "date": new Date(),
+        "createrId": Meteor.userId(),
+        "createrName": Meteor.user().profile.name,
+        "perticipants": [
+          {
+            "userId": Meteor.userId(),
+            "userName": Meteor.user().profile.name,
+            "moderator": true
+            }
+        ],
+        "messages": [],
+        "roomlog": [],
+        "privateRoom": access
+      };
+      var id = Rooms.insert(newRoom)
+      console.log(id);
+      return id;
+  },
+  removeRoom: function(room) {
+    if (room.createrId !== Meteor.userId()) {
+      throw new Meteor.Error(404, "Can't remove a room you did't create!");
+    return false;
+    };
+    Rooms.remove(room);
+    return true;
+  },
+  addLog: function(roomId, text) {
+    var newLog = {
+      "date": new Date(),
+      "logtext": text,
+      "userName": Meteor.user().profile.name
+    }
+    Rooms.update({ _id: roomId }, { $addToSet: { roomlog: newLog}});
   }
 });
-*/
 
 Meteor.startup(function() {
   Meteor.default_server.method_handlers['/room/insert'] = function () {};

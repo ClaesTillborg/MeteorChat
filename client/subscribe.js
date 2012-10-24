@@ -1,4 +1,4 @@
 /*
 	Subscribes to the collections
 */
-Meteor.subscribe("rooms");
+Meteor.subscribe("joinedRooms");
