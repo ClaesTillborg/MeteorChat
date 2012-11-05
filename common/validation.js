@@ -22,13 +22,14 @@ var Validation = {
       return false;
     }
     if(this.roomExists(name)) {
+      console.log("finns redan");
       this.setError("Detta namn finns redan, försök igen!");
       return false;
     } 
     return true;
   },
   roomExists: function(name) {
-    if(Rooms.find({privateRoom: false, name: name}).count() === 0) {
+    if(Rooms.find({name: name}).count() === 0) {
       return false;
     }
     return true;

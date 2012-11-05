@@ -1,22 +1,22 @@
-Template.mainPage.isSelectedRoom = function() {
+Template.chatRoom.isSelectedRoom = function() {
 	return Session.get("selectedRoom") || false;
-};
+}
 
 //roomhander handlers
-Template.roomHandler.roomsExist = function() {
-	return Rooms.find({privateRoom: false}).count() !== 0;
+Template.publicRoomList.roomsExist = function() {
+	return Rooms.find({}).count() !== 0;
 };
 
-Template.roomHandler.publicRooms = function() {
-	return Rooms.find({privateRoom: false});
+Template.publicRoomList.publicRooms = function() {
+	return Rooms.find({});
 };
-Template.roomHandler.isActiveRoom = function() {
+Template.publicRoomList.isActiveRoom = function() {
 	return Session.equals("selectedRoom", this._id);
 };
 
 //roomlist handlers
 Template.roomlist.joinedRooms = function() {
-	return Rooms.find({});
+	return Meteor.user().joinedRooms;
 };
 Template.roomlist.active = function() {
 	return Session.equals("selectedRoom", this._id) ? " active" : "";

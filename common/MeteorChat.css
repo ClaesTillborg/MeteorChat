@@ -18,9 +18,6 @@
 .messageBox {
 	margin-top: 10px;
 }
-.messageBox input[type=text] {
-	width: 80%;
-}
 .message,
 .logMessage {
 	display: block;

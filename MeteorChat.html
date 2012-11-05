@@ -3,23 +3,70 @@
 </head>
 
 <body>
-	<div class="container">
 		{{> header}}
-
-		{{> mainPage}}
-
-		{{> footer}}
-	</div>
+		<div class="container">
+			{{> mainPage}}
+	
+			{{> footer}}
+		</div>
+	
 </body>
 <!--Head template that changes.-->
 <template name="header">
-	<header>
-		<h1>{{header}}</h1>
-		{{loginButtons}}
-	</header>
+	<div class="navbar navbar-static-top">
+  <div class="navbar-inner">
+    <div class="container">
+ 
+      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+ 
+      <!-- Be sure to leave the brand out there if you want it shown -->
+      <a class="brand" href="#">Meteor Chat</a>
+ 	{{loginButtons}}
+      <!-- Everything you want hidden at 940px or less, place within here -->
+      {{#if currentUser}}
+      <div class="nav-collapse">
+      	<div class="navbar-form pull-right">
+				  <input type="text" class="span2 createRoom">
+				  <button type="button" class="btn">Create room</button>
+				</div>
+				
+				<ul class="nav pull-right">
+				  <li class="dropdown">
+				    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+				      Public rooms
+				      <b class="caret"></b>
+				    </a>
+				    
+				    	{{> publicRoomList}}
+				    
+				  </li>
+				</ul>			
+        <!-- .nav, .navbar-search, .navbar-form, etc -->
+      </div>
+      {{/if}}
+ 
+    </div>
+  </div>
+</div>
 </template>
 
+<template name="publicRoomList">
+	{{#if roomsExist}}
+		<ul class="dropdown-menu">
+			{{#each publicRooms}}
+				<li class="{{#if isActiveRoom}}active{{/if}} roomSelect {{_id}}"><a href="#">{{name}}</a></li>
+			{{/each}}
+		</ul>
+	{{/if}}		
+</div>
+</template>
 <template name="roomHandler">
+	<!--
 	<div>
 		{{#if error}}
 	    <span class="error">
@@ -29,81 +76,71 @@
 	  <label for="roomName">Skapa ett eget rum:</label>
 		<input type="text" id="roomName" class="createRoom" name="CreatRoom" title="Rummets namn..." placeholder="Nytt rum..." />
 		<label for="roomAccess">Gör rummet privat <input type="checkbox" id="roomAccess" name="private" /></label>
-		{{#if roomsExist}}
-		<label>Publika rum:</label>
-		<select class="roomSelect" name="roomselect">
-		{{#each publicRooms}}
-
-			{{#if isActiveRoom}}
-			<option value="{{_id}}" selected="selected">{{name}}</option>
-			{{else}}
-			<option value="{{_id}}">{{name}}</option>
-			{{/if}}
-		{{/each}}
-		</select>
-		{{/if}}
-	</div>
+	</div>-->
 </template>
 
 <template name="mainPage">
-	<div class="content">
 	{{#if currentUser}}
-		{{> roomHandler}}
-		{{#if isSelectedRoom}}
-			{{> roomlist}}
-			{{> chatRoom}}
-		{{/if}}
+		{{> roomHandler}}		
+				{{> roomlist}}		
+				{{> chatRoom}}
 	{{else}}
 		<h2>Vänligen logga in!</h2>
 	{{/if}}
-	</div>
 </template>
 
 <template name="footer">
-	<footer>
+	<footer class="row">
+		<div class="span12">
 			Denna testchat har skapats i utvecklingssyfte för kursen <a href="http://coursepress.lnu.se/kurs/moderna-applikationsmiljoer" title="Kursens webbsida">Moderna applikationsmiljöer <span>"2DV400"</span></a>. Den har i uppgift att visa lite om realtidswebben och hur man med javascripts-ramverket <a href="http://www.meteor.com" title="Meteors webbsida">Meteor</a> kan skapa applikationer som använder sig av just detta. Vi som har skapat denna applikation heter Hans Bentlöv och Claes Tillborg och går tredje året på programmet <a href="http://coursepress.lnu.se/program/webbprogrammerare" title="Programmets webbsida">webbprogramering</a> på <a href="http://www.lnu.se" title="Linneuniversitetets webbsida">Linneuniversitetet</a> i Kalmar.
-		</footer>
+		</div>
+	</footer>
 </template>
 
 <template name="roomlist">
-	<nav>
-		{{#each joinedRooms}}
-			<span class="roomTag{{active}}">{{name}}</span> |
-		{{/each}}
-	</nav>
+	<div class="row">
+		<div class="span12">
+			<ul class="nav nav-pills">
+				
+			</ul>
+		</div>
+	</div>
 </template>
 
 <template name="chatRoom">
-	<section>
+	{{#if isSelectedRoom}}
+	<div class="row">
+
 		{{#with room}}
-		<div class ="thirteen columns alpha chatWraper">
-			<div class="chatWindow framed">
+		<h2>{{name}}</h2>
+		<div class="span8">
 				{{#each messages}}
 				<span class="message"><strong>{{userName}}:</strong> {{message}}</span>
 				{{/each}}
-			</div>
-			
-			<div class="messageBox">
-				<input type="text" name="message" class="addMessage" title="Skriv meddelande..." placeholder="Skriv meddelande...">
-			</div>
 		</div>
-
-		<aside class="three columns omega pertisipantlist framed">
+		<div class="span4 hidden-phone">
 			<dl>
-				<dt>Host:</dt>
-					<dd>{{createrName}}</dd>
 				<dt>Chat members:</dt>
-					{{#each perticipants}}
-					<dd>{{userName}}</dd>
+					{{#each participants}}
+					<dd>{{#if moderator}}@{{/if}}
+						{{userName}}</dd>
 					{{/each}}
 			</dl>
-		</aside>
-		<br class="clear" />
-		<div class="eventWindow framed">
+		</div>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<div class="messageBox well">
+				<input type="text" name="message" class="span12 addMessage" title="Skriv meddelande..." placeholder="Skriv meddelande...">
+			</div>
+		</div>
+	</div>
+		<div class="alert alert-info hidden-phone">
 			{{#each roomlog}}
 			<span class="logMessage">{{logDate date}} - [{{userName}}] {{logtext}}</span>
 			{{/each}}
 		</div>
 		{{/with}}
-	</section>
+
+		{{/if}}
 </template>
