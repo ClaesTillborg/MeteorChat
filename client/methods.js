@@ -2,7 +2,7 @@ Room = {
   join: function(room) {
     var selectedRoomId = Session.get("selectedRoom");
 
-    var participant = { "userId": Meteor.userId(), "userName": Meteor.user().profile.name, "moderator": false };
+    var participant = { "userId": Meteor.userId(), "userName": profileName(), "moderator": false };
 
     if (room.createrId == Meteor.userId()) {
       participant.moderator = true;
@@ -25,7 +25,7 @@ Room = {
         "name": name,
         "date": new Date(),
         "createrId": Meteor.userId(),
-        "createrName": Meteor.user().profile.name,
+        "createrName": profileName(),
         "participants": [],
         "messages": [],
         "roomlog": [],
@@ -48,7 +48,7 @@ Meteor.methods({
       "_id": uuid,
       "parentId": room._id,
       "userId": Meteor.userId(),
-      "userName": Meteor.user().profile.name,
+      "userName": profileName(),
       "message": text
     };
     Rooms.update({ _id: room._id }, { $addToSet: { messages: newMessage}});
@@ -67,7 +67,7 @@ Meteor.methods({
     var newLog = {
       "date": new Date(),
       "logtext": text,
-      "userName": Meteor.user().profile.name
+      "userName": profileName()
     }
     Rooms.update({ _id: roomId }, { $addToSet: { roomlog: newLog}});
   }
@@ -82,7 +82,7 @@ var Create = {
       "_id": uuid,
       "parentId": room._id,
       "userId": Meteor.userId(),
-      "userName": Meteor.user().profile.name,
+      "userName": profileName(),
       "message": text
     };
     Rooms.update({ _id: room._id }, { $addToSet: { messages: newMessage}});
@@ -91,8 +91,20 @@ var Create = {
     var newLog = {
       "date": new Date(),
       "logtext": text,
-      "userName": Meteor.user().profile.name
+      "userName": profileName()
     }
     Rooms.update({ _id: roomId }, { $addToSet: { roomlog: newLog}});
   }
+};
+
+var profileName = function() {
+  if(Meteor.userLoaded()) {
+    var user = Meteor.user();
+    
+    if (user.profile) {
+      return user.profile.name;
+    }
+    return user.emails[0].address;
+  };
+  return null;
 };
